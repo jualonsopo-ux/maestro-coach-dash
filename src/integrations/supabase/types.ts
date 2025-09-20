@@ -73,78 +73,140 @@ export type Database = {
       }
       availability_exceptions: {
         Row: {
+          calendar_id: number
           created_at: string
           date: string
-          end_time: string | null
+          end_time: string
           id: number
-          is_available: boolean
-          reason: string | null
-          start_time: string | null
+          is_open: boolean
+          note: string | null
+          start_time: string
           updated_at: string
-          user_id: string
           workspace_id: number
         }
         Insert: {
+          calendar_id: number
           created_at?: string
           date: string
-          end_time?: string | null
-          id?: never
-          is_available?: boolean
-          reason?: string | null
-          start_time?: string | null
+          end_time: string
+          id?: number
+          is_open?: boolean
+          note?: string | null
+          start_time: string
           updated_at?: string
-          user_id: string
           workspace_id: number
         }
         Update: {
+          calendar_id?: number
           created_at?: string
           date?: string
-          end_time?: string | null
-          id?: never
-          is_available?: boolean
-          reason?: string | null
-          start_time?: string | null
+          end_time?: string
+          id?: number
+          is_open?: boolean
+          note?: string | null
+          start_time?: string
           updated_at?: string
-          user_id?: string
           workspace_id?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "availability_exceptions_calendar_id_fkey"
+            columns: ["calendar_id"]
+            isOneToOne: false
+            referencedRelation: "calendars"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "availability_exceptions_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       availability_rules: {
         Row: {
+          active: boolean
+          calendar_id: number
           created_at: string
-          day_of_week: Database["public"]["Enums"]["day_of_week_enum"]
           end_time: string
           id: number
-          is_active: boolean
           start_time: string
           updated_at: string
-          user_id: string
+          weekday: number
+          workspace_id: number
+        }
+        Insert: {
+          active?: boolean
+          calendar_id: number
+          created_at?: string
+          end_time: string
+          id?: number
+          start_time: string
+          updated_at?: string
+          weekday: number
+          workspace_id: number
+        }
+        Update: {
+          active?: boolean
+          calendar_id?: number
+          created_at?: string
+          end_time?: string
+          id?: number
+          start_time?: string
+          updated_at?: string
+          weekday?: number
+          workspace_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "availability_rules_calendar_id_fkey"
+            columns: ["calendar_id"]
+            isOneToOne: false
+            referencedRelation: "calendars"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "availability_rules_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      calendars: {
+        Row: {
+          created_at: string
+          id: number
+          name: string
+          timezone: string
           workspace_id: number
         }
         Insert: {
           created_at?: string
-          day_of_week: Database["public"]["Enums"]["day_of_week_enum"]
-          end_time: string
-          id?: never
-          is_active?: boolean
-          start_time: string
-          updated_at?: string
-          user_id: string
+          id?: number
+          name?: string
+          timezone?: string
           workspace_id: number
         }
         Update: {
           created_at?: string
-          day_of_week?: Database["public"]["Enums"]["day_of_week_enum"]
-          end_time?: string
-          id?: never
-          is_active?: boolean
-          start_time?: string
-          updated_at?: string
-          user_id?: string
+          id?: number
+          name?: string
+          timezone?: string
           workspace_id?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "calendars_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       lead_tags: {
         Row: {
@@ -273,112 +335,127 @@ export type Database = {
           },
         ]
       }
-      session_templates: {
+      session_reminders: {
         Row: {
-          color: string | null
           created_at: string
-          default_price: number | null
-          description: string | null
-          duration_minutes: number
           id: number
-          is_active: boolean
-          name: string
-          session_type: Database["public"]["Enums"]["session_type_enum"]
-          updated_at: string
+          method: string
+          send_at: string
+          sent_at: string | null
+          session_id: number
+          status: string | null
           workspace_id: number
         }
         Insert: {
-          color?: string | null
           created_at?: string
-          default_price?: number | null
-          description?: string | null
-          duration_minutes: number
-          id?: never
-          is_active?: boolean
-          name: string
-          session_type: Database["public"]["Enums"]["session_type_enum"]
-          updated_at?: string
+          id?: number
+          method?: string
+          send_at: string
+          sent_at?: string | null
+          session_id: number
+          status?: string | null
           workspace_id: number
         }
         Update: {
-          color?: string | null
           created_at?: string
-          default_price?: number | null
-          description?: string | null
-          duration_minutes?: number
-          id?: never
-          is_active?: boolean
-          name?: string
-          session_type?: Database["public"]["Enums"]["session_type_enum"]
-          updated_at?: string
+          id?: number
+          method?: string
+          send_at?: string
+          sent_at?: string | null
+          session_id?: number
+          status?: string | null
           workspace_id?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "session_reminders_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "session_reminders_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "view_calendar_week"
+            referencedColumns: ["session_id"]
+          },
+          {
+            foreignKeyName: "session_reminders_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       sessions: {
         Row: {
-          amount: number | null
+          calendar_id: number
           created_at: string
           created_by: string
-          end_time: string
+          ends_at: string
           id: number
           lead_id: number | null
-          location: string | null
-          meeting_url: string | null
           notes: string | null
-          payment_status: Database["public"]["Enums"]["payment_status_enum"]
-          reminder_sent: boolean | null
-          session_type: Database["public"]["Enums"]["session_type_enum"]
-          start_time: string
+          price_eur: number | null
+          starts_at: string
           status: Database["public"]["Enums"]["session_status_enum"]
-          title: string
+          type: Database["public"]["Enums"]["session_type_enum"]
           updated_at: string
           workspace_id: number
         }
         Insert: {
-          amount?: number | null
+          calendar_id: number
           created_at?: string
           created_by: string
-          end_time: string
-          id?: never
+          ends_at: string
+          id?: number
           lead_id?: number | null
-          location?: string | null
-          meeting_url?: string | null
           notes?: string | null
-          payment_status?: Database["public"]["Enums"]["payment_status_enum"]
-          reminder_sent?: boolean | null
-          session_type: Database["public"]["Enums"]["session_type_enum"]
-          start_time: string
+          price_eur?: number | null
+          starts_at: string
           status?: Database["public"]["Enums"]["session_status_enum"]
-          title: string
+          type: Database["public"]["Enums"]["session_type_enum"]
           updated_at?: string
           workspace_id: number
         }
         Update: {
-          amount?: number | null
+          calendar_id?: number
           created_at?: string
           created_by?: string
-          end_time?: string
-          id?: never
+          ends_at?: string
+          id?: number
           lead_id?: number | null
-          location?: string | null
-          meeting_url?: string | null
           notes?: string | null
-          payment_status?: Database["public"]["Enums"]["payment_status_enum"]
-          reminder_sent?: boolean | null
-          session_type?: Database["public"]["Enums"]["session_type_enum"]
-          start_time?: string
+          price_eur?: number | null
+          starts_at?: string
           status?: Database["public"]["Enums"]["session_status_enum"]
-          title?: string
+          type?: Database["public"]["Enums"]["session_type_enum"]
           updated_at?: string
           workspace_id?: number
         }
         Relationships: [
           {
+            foreignKeyName: "sessions_calendar_id_fkey"
+            columns: ["calendar_id"]
+            isOneToOne: false
+            referencedRelation: "calendars"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "sessions_lead_id_fkey"
             columns: ["lead_id"]
             isOneToOne: false
             referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessions_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -432,7 +509,54 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      view_calendar_week: {
+        Row: {
+          calendar_id: number | null
+          ends_at: string | null
+          lead_id: number | null
+          lead_name: string | null
+          notes: string | null
+          price_eur: number | null
+          session_id: number | null
+          starts_at: string | null
+          status: Database["public"]["Enums"]["session_status_enum"] | null
+          type: Database["public"]["Enums"]["session_type_enum"] | null
+          workspace_id: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sessions_calendar_id_fkey"
+            columns: ["calendar_id"]
+            isOneToOne: false
+            referencedRelation: "calendars"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessions_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessions_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      view_quick_availability: {
+        Row: {
+          calendar_id: number | null
+          day: string | null
+          end_time: string | null
+          start_time: string | null
+          workspace_id: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
@@ -447,14 +571,6 @@ export type Database = {
         | "Llamada"
         | "Reunión"
         | "Mensaje"
-      day_of_week_enum:
-        | "lunes"
-        | "martes"
-        | "miercoles"
-        | "jueves"
-        | "viernes"
-        | "sabado"
-        | "domingo"
       lead_channel_enum:
         | "instagram"
         | "google_ads"
@@ -468,15 +584,8 @@ export type Database = {
         | "Propuesta"
         | "Ganado"
         | "Perdido"
-      payment_status_enum: "pendiente" | "pagada" | "reembolsada"
       priority_enum: "baja" | "media" | "alta" | "critica"
-      session_status_enum:
-        | "programada"
-        | "confirmada"
-        | "en_curso"
-        | "completada"
-        | "cancelada"
-        | "no_show"
+      session_status_enum: "scheduled" | "completed" | "cancelled" | "no_show"
       session_type_enum: "S1" | "S2" | "S3"
       Status: "Not started" | "Started" | "Completed"
     }
@@ -616,15 +725,6 @@ export const Constants = {
         "Reunión",
         "Mensaje",
       ],
-      day_of_week_enum: [
-        "lunes",
-        "martes",
-        "miercoles",
-        "jueves",
-        "viernes",
-        "sabado",
-        "domingo",
-      ],
       lead_channel_enum: [
         "instagram",
         "google_ads",
@@ -640,16 +740,8 @@ export const Constants = {
         "Ganado",
         "Perdido",
       ],
-      payment_status_enum: ["pendiente", "pagada", "reembolsada"],
       priority_enum: ["baja", "media", "alta", "critica"],
-      session_status_enum: [
-        "programada",
-        "confirmada",
-        "en_curso",
-        "completada",
-        "cancelada",
-        "no_show",
-      ],
+      session_status_enum: ["scheduled", "completed", "cancelled", "no_show"],
       session_type_enum: ["S1", "S2", "S3"],
       Status: ["Not started", "Started", "Completed"],
     },
