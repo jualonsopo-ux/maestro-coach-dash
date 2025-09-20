@@ -1,5 +1,5 @@
 -- Seed data for CRM (Note: This will only work with actual user IDs)
--- Replace 'your-user-id-here' with actual authenticated user IDs
+-- Replace auth.uid() with actual authenticated user IDs when using
 
 -- Insert sample leads
 INSERT INTO leads (full_name, channel, score, amount, status, priority, tags, notes, due_date, user_id) VALUES
@@ -24,99 +24,90 @@ INSERT INTO leads (full_name, channel, score, amount, status, priority, tags, no
 ('Paola Guerrero', 'instagram', 93, 3400.00, 'S1 reservado', 'vip', '{"instagram", "vip", "urgente"}', 'Necesita resultados rápidos', CURRENT_DATE + INTERVAL '1 day', auth.uid()),
 ('Mateo Herrera', 'referido', 84, 2300.00, 'S1 hecho', 'alta_prioridad', '{"referido", "caliente"}', 'Programar seguimiento', CURRENT_DATE, auth.uid());
 
--- Insert sample activities
+-- Insert sample activities (using lead sequence numbers, will need to be updated with actual lead IDs)
 INSERT INTO activities (lead_id, type, done, user_id) VALUES
--- Actividades para María García López (lead_id: 1)
-(1, 'S1', false, auth.uid()),
-(1, 'Nota', true, auth.uid()),
+-- Actividades para lead 1 (María García López)
+((SELECT id FROM leads WHERE full_name = 'María García López' LIMIT 1), 'S1', false, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'María García López' LIMIT 1), 'Nota', true, auth.uid()),
 
--- Actividades para Carlos Rodríguez (lead_id: 2)
-(2, 'S1', true, auth.uid()),
-(2, 'Nota', true, auth.uid()),
-(2, 'S2', false, auth.uid()),
+-- Actividades para lead 2 (Carlos Rodríguez)
+((SELECT id FROM leads WHERE full_name = 'Carlos Rodríguez' LIMIT 1), 'S1', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Carlos Rodríguez' LIMIT 1), 'Nota', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Carlos Rodríguez' LIMIT 1), 'S2', false, auth.uid()),
 
--- Actividades para Ana Martínez Silva (lead_id: 3)
-(3, 'S1', true, auth.uid()),
-(3, 'S2', false, auth.uid()),
-(3, 'Nota', true, auth.uid()),
+-- Actividades para lead 3 (Ana Martínez Silva)
+((SELECT id FROM leads WHERE full_name = 'Ana Martínez Silva' LIMIT 1), 'S1', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Ana Martínez Silva' LIMIT 1), 'S2', false, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Ana Martínez Silva' LIMIT 1), 'Nota', true, auth.uid()),
 
--- Actividades para Luis Fernando Castro (lead_id: 4)
-(4, 'S1', true, auth.uid()),
-(4, 'S2', true, auth.uid()),
-(4, 'Pago', true, auth.uid()),
-(4, 'Nota', true, auth.uid()),
+-- Actividades para lead 4 (Luis Fernando Castro)
+((SELECT id FROM leads WHERE full_name = 'Luis Fernando Castro' LIMIT 1), 'S1', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Luis Fernando Castro' LIMIT 1), 'S2', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Luis Fernando Castro' LIMIT 1), 'Pago', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Luis Fernando Castro' LIMIT 1), 'Nota', true, auth.uid()),
 
--- Actividades para Isabella Herrera (lead_id: 5)
-(5, 'S1', true, auth.uid()),
-(5, 'Nota', true, auth.uid()),
-(5, 'S2', false, auth.uid()),
+-- Actividades para lead 5 (Isabella Herrera)
+((SELECT id FROM leads WHERE full_name = 'Isabella Herrera' LIMIT 1), 'S1', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Isabella Herrera' LIMIT 1), 'Nota', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Isabella Herrera' LIMIT 1), 'S2', false, auth.uid()),
 
--- Actividades para Diego Morales (lead_id: 6)
-(6, 'S1', true, auth.uid()),
-(6, 'Nota', true, auth.uid()),
+-- Actividades para lead 6 (Diego Morales)
+((SELECT id FROM leads WHERE full_name = 'Diego Morales' LIMIT 1), 'S1', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Diego Morales' LIMIT 1), 'Nota', true, auth.uid()),
 
--- Actividades para Carmen Jiménez (lead_id: 7)
-(7, 'S1', false, auth.uid()),
-(7, 'Nota', true, auth.uid()),
+-- Actividades para lead 7 (Carmen Jiménez)
+((SELECT id FROM leads WHERE full_name = 'Carmen Jiménez' LIMIT 1), 'S1', false, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Carmen Jiménez' LIMIT 1), 'Nota', true, auth.uid()),
 
--- Actividades para Roberto Vega (lead_id: 8)
-(8, 'S1', true, auth.uid()),
-(8, 'S2', false, auth.uid()),
-(8, 'Nota', true, auth.uid()),
+-- Actividades para lead 8 (Roberto Vega)
+((SELECT id FROM leads WHERE full_name = 'Roberto Vega' LIMIT 1), 'S1', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Roberto Vega' LIMIT 1), 'S2', false, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Roberto Vega' LIMIT 1), 'Nota', true, auth.uid()),
 
--- Actividades para Sofía Ramírez (lead_id: 9)
-(9, 'S1', false, auth.uid()),
-(9, 'Nota', true, auth.uid()),
+-- Actividades para lead 9 (Sofía Ramírez)
+((SELECT id FROM leads WHERE full_name = 'Sofía Ramírez' LIMIT 1), 'S1', false, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Sofía Ramírez' LIMIT 1), 'Nota', true, auth.uid()),
 
--- Actividades para Andrés Delgado (lead_id: 10)
-(10, 'S1', true, auth.uid()),
-(10, 'S2', false, auth.uid()),
-(10, 'Nota', true, auth.uid()),
+-- Actividades para lead 10 (Andrés Delgado)
+((SELECT id FROM leads WHERE full_name = 'Andrés Delgado' LIMIT 1), 'S1', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Andrés Delgado' LIMIT 1), 'S2', false, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Andrés Delgado' LIMIT 1), 'Nota', true, auth.uid()),
 
--- Actividades para Valentina Torres (lead_id: 11)
-(11, 'S1', true, auth.uid()),
-(11, 'Nota', true, auth.uid()),
-(11, 'S2', false, auth.uid()),
+-- Actividades adicionales para completar ~50 actividades
+((SELECT id FROM leads WHERE full_name = 'Valentina Torres' LIMIT 1), 'S1', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Valentina Torres' LIMIT 1), 'Nota', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Valentina Torres' LIMIT 1), 'S2', false, auth.uid()),
 
--- Actividades para Fernando López (lead_id: 12)
-(12, 'S1', true, auth.uid()),
-(12, 'Nota', true, auth.uid()),
-(12, 'S2', false, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Fernando López' LIMIT 1), 'S1', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Fernando López' LIMIT 1), 'Nota', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Fernando López' LIMIT 1), 'S2', false, auth.uid()),
 
--- Actividades para Camila Ruiz (lead_id: 13)
-(13, 'S1', true, auth.uid()),
-(13, 'S2', true, auth.uid()),
-(13, 'Pago', true, auth.uid()),
-(13, 'Nota', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Camila Ruiz' LIMIT 1), 'S1', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Camila Ruiz' LIMIT 1), 'S2', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Camila Ruiz' LIMIT 1), 'Pago', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Camila Ruiz' LIMIT 1), 'Nota', true, auth.uid()),
 
--- Actividades para Gabriel Sánchez (lead_id: 14)
-(14, 'S1', false, auth.uid()),
-(14, 'Nota', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Gabriel Sánchez' LIMIT 1), 'S1', false, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Gabriel Sánchez' LIMIT 1), 'Nota', true, auth.uid()),
 
--- Actividades para Natalia Vargas (lead_id: 15)
-(15, 'S1', true, auth.uid()),
-(15, 'Nota', true, auth.uid()),
-(15, 'S2', false, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Natalia Vargas' LIMIT 1), 'S1', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Natalia Vargas' LIMIT 1), 'Nota', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Natalia Vargas' LIMIT 1), 'S2', false, auth.uid()),
 
--- Actividades para Sebastián Cruz (lead_id: 16)
-(16, 'S1', true, auth.uid()),
-(16, 'S2', false, auth.uid()),
-(16, 'Nota', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Sebastián Cruz' LIMIT 1), 'S1', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Sebastián Cruz' LIMIT 1), 'S2', false, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Sebastián Cruz' LIMIT 1), 'Nota', true, auth.uid()),
 
--- Actividades para Daniela Mendoza (lead_id: 17)
-(17, 'S1', true, auth.uid()),
-(17, 'S2', false, auth.uid()),
-(17, 'Nota', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Daniela Mendoza' LIMIT 1), 'S1', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Daniela Mendoza' LIMIT 1), 'S2', false, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Daniela Mendoza' LIMIT 1), 'Nota', true, auth.uid()),
 
--- Actividades para Alejandro Romero (lead_id: 18)
-(18, 'S1', true, auth.uid()),
-(18, 'Nota', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Alejandro Romero' LIMIT 1), 'S1', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Alejandro Romero' LIMIT 1), 'Nota', true, auth.uid()),
 
--- Actividades para Paola Guerrero (lead_id: 19)
-(19, 'S1', false, auth.uid()),
-(19, 'Nota', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Paola Guerrero' LIMIT 1), 'S1', false, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Paola Guerrero' LIMIT 1), 'Nota', true, auth.uid()),
 
--- Actividades para Mateo Herrera (lead_id: 20)
-(20, 'S1', true, auth.uid()),
-(20, 'Nota', true, auth.uid()),
-(20, 'S2', false, auth.uid());
+((SELECT id FROM leads WHERE full_name = 'Mateo Herrera' LIMIT 1), 'S1', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Mateo Herrera' LIMIT 1), 'Nota', true, auth.uid()),
+((SELECT id FROM leads WHERE full_name = 'Mateo Herrera' LIMIT 1), 'S2', false, auth.uid());

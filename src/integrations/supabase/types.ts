@@ -14,7 +14,86 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      activities: {
+        Row: {
+          created_at: string | null
+          done: boolean | null
+          id: number
+          lead_id: number
+          type: Database["public"]["Enums"]["activity_type_enum"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          done?: boolean | null
+          id?: number
+          lead_id: number
+          type: Database["public"]["Enums"]["activity_type_enum"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          done?: boolean | null
+          id?: number
+          lead_id?: number
+          type?: Database["public"]["Enums"]["activity_type_enum"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activities_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      leads: {
+        Row: {
+          amount: number | null
+          channel: string | null
+          created_at: string | null
+          due_date: string | null
+          full_name: string
+          id: number
+          notes: string | null
+          priority: string | null
+          score: number | null
+          status: Database["public"]["Enums"]["lead_status_enum"] | null
+          tags: string[] | null
+          user_id: string
+        }
+        Insert: {
+          amount?: number | null
+          channel?: string | null
+          created_at?: string | null
+          due_date?: string | null
+          full_name: string
+          id?: number
+          notes?: string | null
+          priority?: string | null
+          score?: number | null
+          status?: Database["public"]["Enums"]["lead_status_enum"] | null
+          tags?: string[] | null
+          user_id: string
+        }
+        Update: {
+          amount?: number | null
+          channel?: string | null
+          created_at?: string | null
+          due_date?: string | null
+          full_name?: string
+          id?: number
+          notes?: string | null
+          priority?: string | null
+          score?: number | null
+          status?: Database["public"]["Enums"]["lead_status_enum"] | null
+          tags?: string[] | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,6 +102,14 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      activity_type_enum: "S1" | "S2" | "Pago" | "Nota"
+      lead_status_enum:
+        | "S1 reservado"
+        | "S1 hecho"
+        | "S2 reservado"
+        | "Propuesta"
+        | "Ganado"
+        | "Perdido"
       Status: "Not started" | "Started" | "Completed"
     }
     CompositeTypes: {
@@ -151,6 +238,15 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      activity_type_enum: ["S1", "S2", "Pago", "Nota"],
+      lead_status_enum: [
+        "S1 reservado",
+        "S1 hecho",
+        "S2 reservado",
+        "Propuesta",
+        "Ganado",
+        "Perdido",
+      ],
       Status: ["Not started", "Started", "Completed"],
     },
   },
