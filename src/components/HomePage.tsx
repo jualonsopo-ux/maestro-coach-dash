@@ -1,31 +1,62 @@
 import { useState } from "react";
-import { Calendar as CalendarIcon, ExternalLink, Settings, TrendingUp, TrendingDown, Users, Euro, AlertCircle, Clock } from "lucide-react";
+import { Calendar as CalendarIcon, ExternalLink, Settings, TrendingUp, TrendingDown, Users, Euro, AlertCircle, Clock, ChevronRight, BarChart3, CreditCard, Package, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { cn } from "@/lib/utils";
 
 // Mock data
 const kpiData = {
-  netIncome: { value: 4580, change: 12.3, period: "28d" },
-  nextPayout: { value: 1250, date: "25 Oct" },
-  showUpRate: { value: 94.2, change: 2.1 },
-  conversionRate: { value: 32.8, change: -1.2 }
+  netIncome: { value: 1250, change: 12.3, period: "mes" },
+  nextPayout: { value: 420, period: "próximos 7d" },
+  showUpRate: { value: 62, period: "semana" },
+  funnelRate: { value: 8.2, period: "total S1+Pago" }
 };
 
-const upcomingSessions = [
-  { id: 1, client: "María González", time: "10:00", type: "Coaching Inicial", status: "confirmed" },
-  { id: 2, client: "Carlos Ruiz", time: "14:30", type: "Seguimiento", status: "pending" },
-  { id: 3, client: "Ana López", time: "16:00", type: "Sesión Premium", status: "confirmed" },
+const revenueData = [
+  { day: '1', value: 120 },
+  { day: '2', value: 180 },
+  { day: '3', value: 150 },
+  { day: '4', value: 220 },
+  { day: '5', value: 280 },
+  { day: '6', value: 240 },
+  { day: '7', value: 320 },
+];
+
+const paymentHealthData = {
+  savedCard: { percentage: 72, count: "72%" },
+  pendingSCA: { count: 1 },
+  failedPayments: { count: 2 },
+  disputes: { count: 0 }
+};
+
+const tasksAndAlerts = [
+  { time: "10:00", client: "Laura", type: "S1", status: "confirmed" },
+  { time: "15:30", client: "Carlos", type: "S2", status: "pending" },
+  { time: "17:00", client: "Andrea", type: "S3", status: "confirmed" },
+];
+
+const actionableInsights = [
+  "Habilita 30'S para mejora el show-up",
+  "Aumenta las plazas disponibles S1 esta semana", 
+  "Integra un vídeo en la landing 'Bio'"
+];
+
+const paymentsByState = [
+  { state: "Completados", value: 85, color: "bg-success" },
+  { state: "Pendientes", value: 12, color: "bg-warning" },
+  { state: "Fallidos", value: 3, color: "bg-destructive" }
 ];
 
 export function HomePage() {
-  const [dateRange, setDateRange] = useState("28d");
+  const [dateRange, setDateRange] = useState("7");
   
   const dateRanges = [
-    { value: "7d", label: "7 días" },
-    { value: "28d", label: "28 días" },
-    { value: "90d", label: "90 días" }
+    { value: "7", label: "7 días" },
+    { value: "28", label: "28 días" },
+    { value: "90", label: "90 días" }
   ];
 
   return (
@@ -33,12 +64,11 @@ export function HomePage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Hola, Coach Ana</h1>
-          <p className="text-muted-foreground">Aquí tienes un resumen de tu negocio</p>
+          <h1 className="text-2xl font-bold text-foreground">Hola, María</h1>
         </div>
         
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-          {/* Date Range Selector */}
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">Últimos</span>
           <div className="flex items-center gap-1 p-1 bg-muted rounded-lg">
             {dateRanges.map((range) => (
               <Button
@@ -52,195 +82,209 @@ export function HomePage() {
               </Button>
             ))}
           </div>
-          
-          {/* Quick Actions */}
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="gap-2">
-              <ExternalLink className="w-4 h-4" />
-              Compartir Link
-            </Button>
-            <Button variant="outline" size="sm" className="gap-2">
-              <Settings className="w-4 h-4" />
-              Disponibilidad
-            </Button>
-          </div>
         </div>
       </div>
 
       {/* KPIs Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Net Income */}
-        <Card className="relative overflow-hidden">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Ingresos Netos</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold text-foreground">€{kpiData.netIncome.value.toLocaleString()}</div>
-                <div className="flex items-center gap-1 mt-1">
-                  <TrendingUp className="w-3 h-3 text-success" />
-                  <span className="text-xs text-success">+{kpiData.netIncome.change}%</span>
-                  <span className="text-xs text-muted-foreground">vs período anterior</span>
-                </div>
-              </div>
-              <div className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center">
-                <Euro className="w-5 h-5 text-primary-foreground" />
-              </div>
+        <Card>
+          <CardContent className="p-4">
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground">Ingresos netos ({kpiData.netIncome.period})</p>
+              <p className="text-2xl font-bold text-foreground">€{kpiData.netIncome.value}</p>
             </div>
           </CardContent>
         </Card>
 
         {/* Next Payout */}
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Próximo Pago</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold text-foreground">€{kpiData.nextPayout.value}</div>
-                <div className="text-xs text-muted-foreground mt-1">{kpiData.nextPayout.date}</div>
-              </div>
-              <div className="w-10 h-10 bg-gradient-success rounded-full flex items-center justify-center">
-                <CalendarIcon className="w-5 h-5 text-success-foreground" />
-              </div>
+          <CardContent className="p-4">
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground">Payouts {kpiData.nextPayout.period}</p>
+              <p className="text-2xl font-bold text-foreground">€{kpiData.nextPayout.value}</p>
             </div>
           </CardContent>
         </Card>
 
         {/* Show Up Rate */}
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Tasa de Asistencia</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold text-foreground">{kpiData.showUpRate.value}%</div>
-                <div className="flex items-center gap-1 mt-1">
-                  <TrendingUp className="w-3 h-3 text-success" />
-                  <span className="text-xs text-success">+{kpiData.showUpRate.change}%</span>
-                </div>
-              </div>
-              <div className="w-10 h-10 bg-primary-light rounded-full flex items-center justify-center">
-                <Users className="w-5 h-5 text-primary" />
-              </div>
+          <CardContent className="p-4">
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground">Show-up S1 ({kpiData.showUpRate.period})</p>
+              <p className="text-2xl font-bold text-foreground">{kpiData.showUpRate.value}%</p>
             </div>
           </CardContent>
         </Card>
 
-        {/* Conversion Rate */}
+        {/* Funnel Rate */}
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Tasa de Conversión</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold text-foreground">{kpiData.conversionRate.value}%</div>
-                <div className="flex items-center gap-1 mt-1">
-                  <TrendingDown className="w-3 h-3 text-destructive" />
-                  <span className="text-xs text-destructive">{kpiData.conversionRate.change}%</span>
-                </div>
-              </div>
-              <div className="w-10 h-10 bg-warning/10 rounded-full flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-warning" />
-              </div>
+          <CardContent className="p-4">
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground">Embudo {kpiData.funnelRate.period}</p>
+              <p className="text-2xl font-bold text-foreground">{kpiData.funnelRate.value}%</p>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Content Grid */}
+      {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Upcoming Sessions */}
-        <Card className="lg:col-span-2">
+        {/* Revenue Chart */}
+        <Card className="lg:col-span-1">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Clock className="w-5 h-5" />
-              Próximas Sesiones
-            </CardTitle>
+            <CardTitle className="text-base">Ingresos</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              {upcomingSessions.map((session) => (
-                <div key={session.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                      <Users className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <div className="font-medium text-foreground">{session.client}</div>
-                      <div className="text-sm text-muted-foreground">{session.type}</div>
-                    </div>
+            <div className="h-32">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={revenueData}>
+                  <Area 
+                    type="monotone" 
+                    dataKey="value" 
+                    stroke="hsl(var(--primary))" 
+                    fill="hsl(var(--primary))" 
+                    fillOpacity={0.1}
+                    strokeWidth={2}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Payment Health */}
+        <Card className="lg:col-span-1">
+          <CardHeader>
+            <CardTitle className="text-base">Salud de cobros</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-success rounded-full"></div>
+                <span className="text-sm text-muted-foreground">% tarjeta guardada</span>
+              </div>
+              <span className="text-sm font-medium">{paymentHealthData.savedCard.count}</span>
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-warning rounded-full"></div>
+                <span className="text-sm text-muted-foreground">SCA pendiente</span>
+              </div>
+              <span className="text-sm font-medium">{paymentHealthData.pendingSCA.count}</span>
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-destructive rounded-full"></div>
+                <span className="text-sm text-muted-foreground">Pagos fallidos</span>
+              </div>
+              <span className="text-sm font-medium">{paymentHealthData.failedPayments.count}</span>
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-foreground rounded-full"></div>
+                <span className="text-sm text-muted-foreground">Disputas</span>
+              </div>
+              <span className="text-sm font-medium">{paymentHealthData.disputes.count}</span>
+            </div>
+
+            <div className="pt-2 space-y-1">
+              <p className="text-xs font-medium text-foreground">Cobros por estado</p>
+              <div className="space-y-1">
+                {paymentsByState.map((item, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <div className={cn("h-2 rounded-full", item.color)} style={{ width: `${item.value}%` }}></div>
                   </div>
-                  <div className="text-right">
-                    <div className="font-medium text-foreground">{session.time}</div>
-                    <Badge 
-                      variant={session.status === "confirmed" ? "default" : "secondary"}
-                      className="text-xs"
-                    >
-                      {session.status === "confirmed" ? "Confirmada" : "Pendiente"}
-                    </Badge>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Tasks and Alerts */}
+        <Card className="lg:col-span-1">
+          <CardHeader>
+            <CardTitle className="text-base">Tareas y alertas</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-1">
+              <div className="grid grid-cols-3 gap-4 text-xs text-muted-foreground font-medium border-b border-border pb-2">
+                <span>Hora</span>
+                <span>Cliente</span>
+                <span>Tipo</span>
+              </div>
+              
+              {tasksAndAlerts.map((task, index) => (
+                <div key={index} className="grid grid-cols-3 gap-4 py-2 text-sm">
+                  <span className="text-foreground">{task.time}</span>
+                  <span className="text-foreground">{task.client}</span>
+                  <div className="flex items-center justify-between">
+                    <span className="text-foreground">{task.type}</span>
+                    <ChevronRight className="w-3 h-3 text-muted-foreground" />
                   </div>
                 </div>
               ))}
             </div>
-            <div className="mt-4 pt-4 border-t border-border">
-              <Button variant="outline" className="w-full">
-                Ver Calendario Completo
-              </Button>
-            </div>
           </CardContent>
         </Card>
+      </div>
 
-        {/* Insights Panel */}
-        <Card>
+      {/* Bottom Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Funnel Visualization */}
+        <Card className="lg:col-span-1">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <AlertCircle className="w-5 h-5" />
-              Insights Importantes
-            </CardTitle>
+            <CardTitle className="text-base">Embudo S1+Pago</CardTitle>
+            <p className="text-xs text-muted-foreground">(4 semanas)</p>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="p-3 bg-success-light rounded-lg">
-              <div className="flex items-start gap-2">
-                <TrendingUp className="w-4 h-4 text-success mt-0.5" />
-                <div>
-                  <div className="text-sm font-medium text-success">Excelente tendencia</div>
-                  <div className="text-xs text-success/80 mt-1">
-                    Tus ingresos han aumentado un 24% este mes. ¡Sigue así!
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="p-3 bg-warning/10 rounded-lg">
-              <div className="flex items-start gap-2">
-                <AlertCircle className="w-4 h-4 text-warning mt-0.5" />
-                <div>
-                  <div className="text-sm font-medium text-warning">Optimización sugerida</div>
-                  <div className="text-xs text-warning/80 mt-1">
-                    Considera enviar recordatorios 24h antes para mejorar la asistencia.
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-3 bg-primary-light rounded-lg">
-              <div className="flex items-start gap-2">
-                <Users className="w-4 h-4 text-primary mt-0.5" />
-                <div>
-                  <div className="text-sm font-medium text-primary">Nuevos clientes</div>
-                  <div className="text-xs text-primary/80 mt-1">
-                    Tienes 3 nuevos leads esta semana. ¡Revisa tu CRM!
-                  </div>
-                </div>
+          <CardContent>
+            <div className="flex justify-center">
+              <div className="relative">
+                {/* Funnel visualization */}
+                <div className="w-20 h-6 bg-primary rounded-t-lg"></div>
+                <div className="w-16 h-6 bg-primary/80 mx-auto"></div>
+                <div className="w-12 h-6 bg-primary/60 mx-auto"></div>
+                <div className="w-8 h-6 bg-primary/40 mx-auto rounded-b-lg"></div>
               </div>
             </div>
           </CardContent>
         </Card>
+
+        {/* Actionable Insights */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle className="text-base">Insights accionables</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {actionableInsights.map((insight, index) => (
+                <div key={index} className="flex items-center gap-2 text-sm">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                  <span className="text-foreground">{insight}</span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex flex-wrap gap-3">
+        <Button variant="outline" className="gap-2">
+          <Package className="w-4 h-4" />
+          Crear enlace S1
+        </Button>
+        <Button variant="outline" className="gap-2">
+          <CreditCard className="w-4 h-4" />
+          Cobrar paquete
+        </Button>
+        <Button variant="outline" className="gap-2">
+          <Bell className="w-4 h-4" />
+          Recordatorios de hoy
+        </Button>
       </div>
     </div>
   );
