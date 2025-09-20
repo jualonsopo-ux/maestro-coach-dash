@@ -16,28 +16,43 @@ export type Database = {
     Tables: {
       activities: {
         Row: {
-          created_at: string | null
-          done: boolean | null
+          amount: number | null
+          created_at: string
+          created_by: string
+          done_at: string | null
           id: number
           lead_id: number
+          notes: string | null
+          scheduled_at: string | null
           type: Database["public"]["Enums"]["activity_type_enum"]
-          user_id: string
+          updated_at: string
+          workspace_id: number
         }
         Insert: {
-          created_at?: string | null
-          done?: boolean | null
+          amount?: number | null
+          created_at?: string
+          created_by: string
+          done_at?: string | null
           id?: number
           lead_id: number
+          notes?: string | null
+          scheduled_at?: string | null
           type: Database["public"]["Enums"]["activity_type_enum"]
-          user_id: string
+          updated_at?: string
+          workspace_id: number
         }
         Update: {
-          created_at?: string | null
-          done?: boolean | null
+          amount?: number | null
+          created_at?: string
+          created_by?: string
+          done_at?: string | null
           id?: number
           lead_id?: number
+          notes?: string | null
+          scheduled_at?: string | null
           type?: Database["public"]["Enums"]["activity_type_enum"]
-          user_id?: string
+          updated_at?: string
+          workspace_id?: number
         }
         Relationships: [
           {
@@ -47,50 +62,186 @@ export type Database = {
             referencedRelation: "leads"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "activities_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lead_tags: {
+        Row: {
+          lead_id: number
+          tag_id: number
+        }
+        Insert: {
+          lead_id: number
+          tag_id: number
+        }
+        Update: {
+          lead_id?: number
+          tag_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_tags_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "tags"
+            referencedColumns: ["id"]
+          },
         ]
       }
       leads: {
         Row: {
           amount: number | null
-          channel: string | null
-          created_at: string | null
-          due_date: string | null
+          channel: Database["public"]["Enums"]["lead_channel_enum"] | null
+          created_at: string
+          due_at: string | null
+          email: string | null
           full_name: string
           id: number
-          notes: string | null
-          priority: string | null
+          last_contact_at: string | null
+          next_step: string | null
+          owner_id: string
+          phone: string | null
+          priority: Database["public"]["Enums"]["priority_enum"]
           score: number | null
-          status: Database["public"]["Enums"]["lead_status_enum"] | null
-          tags: string[] | null
-          user_id: string
+          stage: Database["public"]["Enums"]["lead_stage_enum"]
+          updated_at: string
+          workspace_id: number
         }
         Insert: {
           amount?: number | null
-          channel?: string | null
-          created_at?: string | null
-          due_date?: string | null
+          channel?: Database["public"]["Enums"]["lead_channel_enum"] | null
+          created_at?: string
+          due_at?: string | null
+          email?: string | null
           full_name: string
           id?: number
-          notes?: string | null
-          priority?: string | null
+          last_contact_at?: string | null
+          next_step?: string | null
+          owner_id: string
+          phone?: string | null
+          priority?: Database["public"]["Enums"]["priority_enum"]
           score?: number | null
-          status?: Database["public"]["Enums"]["lead_status_enum"] | null
-          tags?: string[] | null
-          user_id: string
+          stage?: Database["public"]["Enums"]["lead_stage_enum"]
+          updated_at?: string
+          workspace_id: number
         }
         Update: {
           amount?: number | null
-          channel?: string | null
-          created_at?: string | null
-          due_date?: string | null
+          channel?: Database["public"]["Enums"]["lead_channel_enum"] | null
+          created_at?: string
+          due_at?: string | null
+          email?: string | null
           full_name?: string
           id?: number
-          notes?: string | null
-          priority?: string | null
+          last_contact_at?: string | null
+          next_step?: string | null
+          owner_id?: string
+          phone?: string | null
+          priority?: Database["public"]["Enums"]["priority_enum"]
           score?: number | null
-          status?: Database["public"]["Enums"]["lead_status_enum"] | null
-          tags?: string[] | null
+          stage?: Database["public"]["Enums"]["lead_stage_enum"]
+          updated_at?: string
+          workspace_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      members: {
+        Row: {
+          created_at: string
+          id: number
+          role: string
+          user_id: string
+          workspace_id: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          role?: string
+          user_id: string
+          workspace_id: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          role?: string
           user_id?: string
+          workspace_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "members_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tags: {
+        Row: {
+          created_at: string
+          id: number
+          name: string
+          workspace_id: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          name: string
+          workspace_id: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          name?: string
+          workspace_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tags_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workspaces: {
+        Row: {
+          created_at: string
+          id: number
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          name?: string
         }
         Relationships: []
       }
@@ -102,14 +253,29 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      activity_type_enum: "S1" | "S2" | "Pago" | "Nota"
-      lead_status_enum:
+      activity_type_enum:
+        | "S1"
+        | "S2"
+        | "Pago"
+        | "Nota"
+        | "Email"
+        | "Llamada"
+        | "Reunión"
+        | "Mensaje"
+      lead_channel_enum:
+        | "instagram"
+        | "google_ads"
+        | "referido"
+        | "orgánico"
+        | "otros"
+      lead_stage_enum:
         | "S1 reservado"
         | "S1 hecho"
         | "S2 reservado"
         | "Propuesta"
         | "Ganado"
         | "Perdido"
+      priority_enum: "baja" | "media" | "alta" | "critica"
       Status: "Not started" | "Started" | "Completed"
     }
     CompositeTypes: {
@@ -238,8 +404,24 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      activity_type_enum: ["S1", "S2", "Pago", "Nota"],
-      lead_status_enum: [
+      activity_type_enum: [
+        "S1",
+        "S2",
+        "Pago",
+        "Nota",
+        "Email",
+        "Llamada",
+        "Reunión",
+        "Mensaje",
+      ],
+      lead_channel_enum: [
+        "instagram",
+        "google_ads",
+        "referido",
+        "orgánico",
+        "otros",
+      ],
+      lead_stage_enum: [
         "S1 reservado",
         "S1 hecho",
         "S2 reservado",
@@ -247,6 +429,7 @@ export const Constants = {
         "Ganado",
         "Perdido",
       ],
+      priority_enum: ["baja", "media", "alta", "critica"],
       Status: ["Not started", "Started", "Completed"],
     },
   },
