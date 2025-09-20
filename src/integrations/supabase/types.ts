@@ -71,6 +71,81 @@ export type Database = {
           },
         ]
       }
+      availability_exceptions: {
+        Row: {
+          created_at: string
+          date: string
+          end_time: string | null
+          id: number
+          is_available: boolean
+          reason: string | null
+          start_time: string | null
+          updated_at: string
+          user_id: string
+          workspace_id: number
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          end_time?: string | null
+          id?: never
+          is_available?: boolean
+          reason?: string | null
+          start_time?: string | null
+          updated_at?: string
+          user_id: string
+          workspace_id: number
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          end_time?: string | null
+          id?: never
+          is_available?: boolean
+          reason?: string | null
+          start_time?: string | null
+          updated_at?: string
+          user_id?: string
+          workspace_id?: number
+        }
+        Relationships: []
+      }
+      availability_rules: {
+        Row: {
+          created_at: string
+          day_of_week: Database["public"]["Enums"]["day_of_week_enum"]
+          end_time: string
+          id: number
+          is_active: boolean
+          start_time: string
+          updated_at: string
+          user_id: string
+          workspace_id: number
+        }
+        Insert: {
+          created_at?: string
+          day_of_week: Database["public"]["Enums"]["day_of_week_enum"]
+          end_time: string
+          id?: never
+          is_active?: boolean
+          start_time: string
+          updated_at?: string
+          user_id: string
+          workspace_id: number
+        }
+        Update: {
+          created_at?: string
+          day_of_week?: Database["public"]["Enums"]["day_of_week_enum"]
+          end_time?: string
+          id?: never
+          is_active?: boolean
+          start_time?: string
+          updated_at?: string
+          user_id?: string
+          workspace_id?: number
+        }
+        Relationships: []
+      }
       lead_tags: {
         Row: {
           lead_id: number
@@ -198,6 +273,116 @@ export type Database = {
           },
         ]
       }
+      session_templates: {
+        Row: {
+          color: string | null
+          created_at: string
+          default_price: number | null
+          description: string | null
+          duration_minutes: number
+          id: number
+          is_active: boolean
+          name: string
+          session_type: Database["public"]["Enums"]["session_type_enum"]
+          updated_at: string
+          workspace_id: number
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          default_price?: number | null
+          description?: string | null
+          duration_minutes: number
+          id?: never
+          is_active?: boolean
+          name: string
+          session_type: Database["public"]["Enums"]["session_type_enum"]
+          updated_at?: string
+          workspace_id: number
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          default_price?: number | null
+          description?: string | null
+          duration_minutes?: number
+          id?: never
+          is_active?: boolean
+          name?: string
+          session_type?: Database["public"]["Enums"]["session_type_enum"]
+          updated_at?: string
+          workspace_id?: number
+        }
+        Relationships: []
+      }
+      sessions: {
+        Row: {
+          amount: number | null
+          created_at: string
+          created_by: string
+          end_time: string
+          id: number
+          lead_id: number | null
+          location: string | null
+          meeting_url: string | null
+          notes: string | null
+          payment_status: Database["public"]["Enums"]["payment_status_enum"]
+          reminder_sent: boolean | null
+          session_type: Database["public"]["Enums"]["session_type_enum"]
+          start_time: string
+          status: Database["public"]["Enums"]["session_status_enum"]
+          title: string
+          updated_at: string
+          workspace_id: number
+        }
+        Insert: {
+          amount?: number | null
+          created_at?: string
+          created_by: string
+          end_time: string
+          id?: never
+          lead_id?: number | null
+          location?: string | null
+          meeting_url?: string | null
+          notes?: string | null
+          payment_status?: Database["public"]["Enums"]["payment_status_enum"]
+          reminder_sent?: boolean | null
+          session_type: Database["public"]["Enums"]["session_type_enum"]
+          start_time: string
+          status?: Database["public"]["Enums"]["session_status_enum"]
+          title: string
+          updated_at?: string
+          workspace_id: number
+        }
+        Update: {
+          amount?: number | null
+          created_at?: string
+          created_by?: string
+          end_time?: string
+          id?: never
+          lead_id?: number | null
+          location?: string | null
+          meeting_url?: string | null
+          notes?: string | null
+          payment_status?: Database["public"]["Enums"]["payment_status_enum"]
+          reminder_sent?: boolean | null
+          session_type?: Database["public"]["Enums"]["session_type_enum"]
+          start_time?: string
+          status?: Database["public"]["Enums"]["session_status_enum"]
+          title?: string
+          updated_at?: string
+          workspace_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sessions_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tags: {
         Row: {
           created_at: string
@@ -262,6 +447,14 @@ export type Database = {
         | "Llamada"
         | "Reunión"
         | "Mensaje"
+      day_of_week_enum:
+        | "lunes"
+        | "martes"
+        | "miercoles"
+        | "jueves"
+        | "viernes"
+        | "sabado"
+        | "domingo"
       lead_channel_enum:
         | "instagram"
         | "google_ads"
@@ -275,7 +468,16 @@ export type Database = {
         | "Propuesta"
         | "Ganado"
         | "Perdido"
+      payment_status_enum: "pendiente" | "pagada" | "reembolsada"
       priority_enum: "baja" | "media" | "alta" | "critica"
+      session_status_enum:
+        | "programada"
+        | "confirmada"
+        | "en_curso"
+        | "completada"
+        | "cancelada"
+        | "no_show"
+      session_type_enum: "S1" | "S2" | "S3"
       Status: "Not started" | "Started" | "Completed"
     }
     CompositeTypes: {
@@ -414,6 +616,15 @@ export const Constants = {
         "Reunión",
         "Mensaje",
       ],
+      day_of_week_enum: [
+        "lunes",
+        "martes",
+        "miercoles",
+        "jueves",
+        "viernes",
+        "sabado",
+        "domingo",
+      ],
       lead_channel_enum: [
         "instagram",
         "google_ads",
@@ -429,7 +640,17 @@ export const Constants = {
         "Ganado",
         "Perdido",
       ],
+      payment_status_enum: ["pendiente", "pagada", "reembolsada"],
       priority_enum: ["baja", "media", "alta", "critica"],
+      session_status_enum: [
+        "programada",
+        "confirmada",
+        "en_curso",
+        "completada",
+        "cancelada",
+        "no_show",
+      ],
+      session_type_enum: ["S1", "S2", "S3"],
       Status: ["Not started", "Started", "Completed"],
     },
   },
